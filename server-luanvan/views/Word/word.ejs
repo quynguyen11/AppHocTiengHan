@@ -1,0 +1,262 @@
+<script>
+    $(document).ready(function(){
+        var url = "http://localhost:3000";
+        $.get(url + "/wordKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.arrWord.forEach(function(word){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="word" srcFile="`+ word.Media +`"  idword="`+word._id+`" spell="`+word.Spelling+`"  mean="`+word.Meaning+`"  types="`+word.Types+`" > `+ word.Language+`</td>   
+                                    <td> `+ word.Spelling+`</td>    
+                                    <td> `+ word.Meaning+`  </td>   
+                                    <td> `+ word.Media+`  </td>   
+                                    <td> `+ word.Types+`  </td>   
+                                                              
+                                </tr>
+                               
+                                   `);
+                                });
+                            }
+        });
+
+        $(document).on("click", ".word", function(){
+            var MediaSrc = $(this).attr("srcFile")
+            var Language = $(this).html();
+            var idWord = $(this).attr("idword");
+            var Spelling = $(this).attr("spell");
+            var Meaning = $(this).attr("mean");
+            var Types = $(this).attr("types");
+
+            $("#Language_Detail").val(Language);
+            $("#Spelling_Detail").val(Spelling);
+            $("#Meaning_Detail").val(Meaning);
+            $("#Types_Detail").val(Types);
+            $("#file_File_Detail").val(MediaSrc);
+            $("#id_Detail").val(idWord);
+
+            
+            
+        });
+
+        $("#mediasp").change(function(){
+            var data = new FormData();
+                jQuery.each(jQuery('#mediasp')[0].files, function(i, file) {
+                    console.log('media');
+                    data.append('media', file);
+                });
+                jQuery.ajax({
+                    url: url + "/uploadFile",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST', // For jQuery < 1.9
+                    success: function(data){
+                        if(data.kq==1){
+                            console.log(data);
+                           $("#AudioCateNew").attr("src", url+`/upload/`+ data.urlFile.filename );
+                         //   $('audio #AudioCateNew').attr("src", url+`/upload/`+ data.urlFile.filename );
+                        //     $('audio').get(0).load();
+                        //    $('audio').get(0).play();
+                           $("#file_MediaCate").val(data.urlFile.filename);
+                      
+                        }else{
+                            console.log("Upload fail!");
+                        }
+                    }
+                });
+        });  
+        $("#btn_Add_New_Cate").click(function(){
+            if($("#file_MediaCate").val().length==0 || $("#language").val().length==0){
+                alert("Vui long nhap Tu & chon am thanh");
+            }else{
+                $.post(url + "/wordKorea/add", {
+                    Language:$("#language").val(),
+                    Spelling:$("#spelling").val(),
+                    Meaning:$("#meaning").val(),
+                    Media:$("#file_MediaCate").val(),
+                    Types:$("#types").val(),    
+                }, function(data){
+                    if(data.kq==1){
+                        
+                        $.get(url + "/wordKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                
+                                alert("Add Sucessfully")
+                                data.arrWord.forEach(function(word){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="word" srcFile="`+ word.Media +`"  idword="`+word._id+`" spell="`+word.Spelling+`"  mean="`+word.Meaning+`"  types="`+word.Types+`" > `+ word.Language+`</td>   
+                                    <td> `+ word.Spelling+`</td>    
+                                    <td> `+ word.Meaning+`  </td>   
+                                    <td> `+ word.Media+`  </td>   
+                                    <td> `+ word.Types+`  </td>   
+                                                              
+                                </tr>
+                               
+                                   `);
+                                });
+                                console.log("data");
+                            }
+
+        });
+
+                        
+                        
+                        console.log("Okay");
+                    }else{
+                        console.log("bad");
+                    }
+                });
+            }
+        });
+
+        $("#mediasp_Detail").change(function(){
+        var data = new FormData();
+        jQuery.each(jQuery('#mediasp_Detail')[0].files, function(i, file) {
+            console.log('media');
+            data.append('media', file);
+        });
+        jQuery.ajax({
+            url: url + "/uploadFile",
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST', // For jQuery < 1.9
+            success: function(data){
+                if(data.kq==1){
+                    console.log(data);
+                    
+                    $("#file_File_Detail").val(data.urlFile.filename);
+                }else{
+                    console.log("Upload fail!");
+                }
+            }
+        });
+    });
+
+        $("#btn_Update").click(function(){
+            $.post(url + "/wordKorea/update", {
+                idWord:$("#id_Detail").val(),
+                LanguageD:$("#Language_Detail").val(),
+                SpellingD:$("#Spelling_Detail").val(),
+                MeaningD:$("#Meaning_Detail").val(),
+                MediaD:$("#file_File_Detail").val(),
+                TypesD:$("#Types_Detail").val()
+            }, function(data){
+                if(data.kq==1){
+                    $.get(url + "/wordKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                
+                                alert("Update Sucessfully")
+                                data.arrWord.forEach(function(word){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="word" srcFile="`+ word.Media +`"  idword="`+word._id+`" spell="`+word.Spelling+`"  mean="`+word.Meaning+`"  types="`+word.Types+`" > `+ word.Language+`</td>   
+                                    <td> `+ word.Spelling+`</td>    
+                                    <td> `+ word.Meaning+`  </td>   
+                                    <td> `+ word.Media+`  </td>   
+                                    <td> `+ word.Types+`  </td>   
+                                                              
+                                </tr>
+                               
+                                   `);
+                                });
+                                console.log("data");
+                            }
+
+        });
+                }else{
+                    alert("Update cate failed: " + data.errMsg);
+                }
+            });
+        });
+
+        $("#btn_Delete").click(function(){
+            $.post(url + "/wordKorea/delete", {idWord:$("#id_Detail").val()}, function(data){
+                if(data.kq==1){
+                        $("#Language_Detail").val(""),
+                        $("#Spelling_Detail").val(""),
+                        $("#Meaning_Detail").val(""),
+                       $("#file_File_Detail").val(""),
+                       $("#Types_Detail").val("");
+                       $.get(url + "/wordKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                
+                                alert("Delete Sucessfully")
+                                data.arrWord.forEach(function(word){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="word" srcFile="`+ word.Media +`"  idword="`+word._id+`" spell="`+word.Spelling+`"  mean="`+word.Meaning+`"  types="`+word.Types+`" > `+ word.Language+`</td>   
+                                    <td> `+ word.Spelling+`</td>    
+                                    <td> `+ word.Meaning+`  </td>   
+                                    <td> `+ word.Media+`  </td>   
+                                    <td> `+ word.Types+`  </td>   
+                                                              
+                                </tr>
+                               
+                                   `);
+                                });
+                                console.log("data");
+                            }
+
+        });
+                }else{
+                    alert("Delete cate failed: " + data.errMsg);
+                }
+            });
+        });
+    });
+
+    </script>
+    
+    <div id="form_AddNewCate">
+        <input type="file" id="mediasp" /> <br/>
+        <input type="text" id="language" placeholder="Language" /> <br/>
+        <input type="text" id="spelling" placeholder="Spelling" /> <br/>
+        <input type="text" id="meaning" placeholder="Meaning" /> <br/>
+        <input type="text" id="types" placeholder="Types" /> <br/>
+        <input type="button" id="btn_Add_New_Cate" value="Add new" />
+        <input type="hidden" id="file_MediaCate" />
+    </div>
+<!--     
+    <ul id="list_Cate"></ul> -->
+    
+    <div id="form_UpdateDeleteWord">
+        <h2 id="detail">  </h2>        
+        <input type="file" id="mediasp_Detail" /> <br/>
+        <input type="text" id="Language_Detail"/> <br/>
+        <input type="text" id="Spelling_Detail"/> <br/>
+        <input type="text" id="Meaning_Detail"/> <br/>
+        <input type="text" id="Types_Detail"/> <br/>
+        <input type="button" id="btn_Update" value="Update" />
+        <input type="button" id="btn_Delete" value="Delete" />
+        <input type="text" id="file_File_Detail"  readonly/>
+        <input type="hidden" id="id_Detail" />
+    </div>
+
+          
+    <table width="auto"  border="1">
+
+        <tr>
+            <th> <h3>Language </h3> </th>
+            
+        </tr>
+        <tr id = "list"> </tr>
+
+
+       
+</table>
+
+  

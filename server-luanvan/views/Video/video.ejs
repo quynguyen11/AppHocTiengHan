@@ -1,0 +1,237 @@
+<script>
+    $(document).ready(function () {
+        var url = "http://localhost:3000";
+
+        $.get(url + "/videoKorea", function (data) {
+            $("#list").html("");
+            if (data.kq == 1) {
+                data.arrVideo.forEach(function (video) {
+
+                    $("#list").append(`
+                                <tr>
+                                    <td  class="video" srcFile="`+ video.File + `"  idvideo="` + video._id + `" idlyric="` + video.Lyric + `" > ` + video.Title + `</td>   
+                                    <td> `+ video.File + `</td>    
+                                
+                                       
+                                </tr>
+                          
+                                   `);
+
+
+
+                });
+
+            }
+        });
+
+        $(document).on("click", ".video", function () {
+            var VideoSrc = $(this).attr("srcFile")
+            var idVideo = $(this).attr("idvideo");
+            var idLyric = $(this).attr("idlyric");
+
+
+            var Title = $(this).html();
+            $("#Title_Detail").val(Title);
+            $("#file_File_Detail").val(VideoSrc);
+            $("#id_Detail").val(idVideo);
+
+            $("#idLyric").val(idLyric);
+
+
+
+        });
+
+        $("#videosp_Detail").change(function () {
+            var data = new FormData();
+            jQuery.each(jQuery('#videosp_Detail')[0].files, function (i, file) {
+                console.log('media');
+                data.append('media', file);
+            });
+            jQuery.ajax({
+                url: url + "/uploadFile",
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST', // For jQuery < 1.9
+                success: function (data) {
+                    if (data.kq == 1) {
+                        console.log(data);
+
+                        $("#file_File_Detail").val(data.urlFile.filename);
+                    } else {
+                        console.log("Upload fail!");
+                    }
+                }
+            });
+        });
+
+        $("#videosp").change(function () {
+            var data = new FormData();
+            jQuery.each(jQuery('#videosp')[0].files, function (i, file) {
+                console.log('media');
+                data.append('media', file);
+            });
+            jQuery.ajax({
+                url: url + "/uploadFile",
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST', // For jQuery < 1.9
+                success: function (data) {
+                    if (data.kq == 1) {
+                        console.log(data);
+                        $("#FileCateNew").attr("src", url + `/upload/` + data.urlFile.filename);
+                        //   $('audio #AudioCateNew').attr("src", url+`/upload/`+ data.urlFile.filename );
+                        //     $('audio').get(0).load();
+                        //    $('audio').get(0).play();
+                        $("#file_MediaCate").val(data.urlFile.filename);
+
+                    } else {
+                        console.log("Upload fail!");
+                    }
+                }
+            });
+        });
+        $("#btn_Add_New_Cate").click(function () {
+            if ($("#file_MediaCate").val().length == 0 || $("#title").val().length == 0) {
+                alert("Vui chon file mp4");
+            } else {
+                $.post(url + "/video/add", {
+                    Title: $("#title").val(),
+                    File: $("#file_MediaCate").val(),
+
+                }, function (data) {
+                    if (data.kq == 1) {
+                        alert("Add Sucsessfully");
+                        $.get(url + "/videoKorea", function (data) {
+                            $("#list").html("");
+                            if (data.kq == 1) {
+                                data.arrVideo.forEach(function (video) {
+
+                                    $("#list").append(`
+                                <tr>
+                                    <td  class="video" srcFile="`+ video.File + `"  idvideo="` + video._id + `" > ` + video.Title + `</td>   
+                                    <td> `+ video.File + `</td>    
+                                 
+                                                        
+                                </tr>
+                               
+                                   `);
+                                });
+
+                            }
+                        });
+
+                        console.log("Okay");
+                    } else {
+                        console.log("bad");
+                    }
+                });
+            }
+        });
+
+        $("#btn_Update").click(function () {
+            $.post(url + "/videoKorea/update", {
+                idVideo: $("#id_Detail").val(),
+                Title: $("#Title_Detail").val(),
+                File: $("#file_File_Detail").val()
+            }, function (data) {
+                if (data.kq == 1) {
+                    alert("Update Sucsessfully");
+                    $.get(url + "/videoKorea", function (data) {
+                        $("#list").html("");
+                        if (data.kq == 1) {
+                            data.arrVideo.forEach(function (video) {
+
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="video" srcFile="`+ video.File + `"  idvideo="` + video._id + `" > ` + video.Title + `</td>   
+                                    <td> `+ video.File + `</td>    
+                                 
+                                                        
+                                </tr>
+                               
+                                   `);
+                            });
+
+                        }
+                    });
+                } else {
+                    alert("Update cate failed: " + data.errMsg);
+                }
+            });
+        });
+
+        $("#btn_Delete").click(function (e) {
+            $.post(url + "/videoKorea/delete", { idVideo: $("#id_Detail").val(), idlyric: $("#idLyric").val() }, function (data) {
+             
+                if (data.kq == 1) {
+                    $("#Title_Detail").val(""),
+                    $("#file_File_Detail").val(""),
+
+                        alert("Delete Sucsessfully");
+                    $.get(url + "/videoKorea", function (data) {
+                        $("#list").html("");
+                        if (data.kq == 1) {
+                            data.arrVideo.forEach(function (video) {
+
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="video" srcFile="`+ video.File + `"  idvideo="` + video._id + `" > ` + video.Title + `</td>   
+                                    <td> `+ video.File + `</td>             
+                                </tr>
+                               
+                                   `);
+                            });
+
+                        }
+                    });
+                } else {
+                    alert("Delete cate failed: " + data.errMsg);
+                }
+            });
+        });
+
+    });
+
+
+
+</script>
+
+<div id="form_AddNewCate">
+    <input type="file" id="videosp" /> <br />
+    <input type="text" id="title" placeholder="Title" /> <br />
+
+
+    <input type="button" id="btn_Add_New_Cate" value="Add new" />
+    <input type="hidden" id="file_MediaCate" />
+
+</div>
+
+
+
+<div id="form_UpdateDeleteVideo">
+    <h2 id="detail"> </h2>
+    <input type="file" id="videosp_Detail" /> <br />
+    <input type="text" id="Title_Detail" /> <br />
+    <input type="button" id="btn_Update" value="Update" />
+    <input type="button" id="btn_Delete" value="Delete" />
+    <input type="text" id="file_File_Detail" readonly />
+    <input type="hidden" id="id_Detail" />
+    <input type="text" id="idLyric" />
+
+</div>
+
+<table width="auto" border="1">
+
+    <tr>
+        <td>
+            <h3>Video </h3>
+        </td>
+
+    </tr>
+    <tr id="list"> </tr>

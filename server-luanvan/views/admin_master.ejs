@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator - App Ngon ngu</title>
+    <link rel="stylesheet" type="text/css" href="./layout.css" />
+    <script src="./jquery.js"></script>
+    
+  
+<!-- 
+    <script>
+        $(document).ready(function(){
+
+   alert(1); -->
+<!--   
+}); -->
+
+<style>
+    body {
+        background-color: #FDFAF7;
+    }
+    
+    </style>
+
+  </script>
+ 
+</head>
+<body >
+    <div id="wrapper">
+        <div id="left">
+            <img id="logo" src="./image/logo.png" alt="">
+            <div id="menu">
+                
+                <a href="./word" style="background-image: linear-gradient(to right, #FABDD4,#FFF5E8);  color: #A27F75; font-weight: bold">Word</a>
+                <a href="./lession"  style="background-image: linear-gradient(to right,#FABDD4,#FFF5E8);  color: #A27F75; font-weight: bold ;" >Lession</a>
+                <a href="./video" style="background-image: linear-gradient(to right,#FABDD4,#FFF5E8);  color: #A27F75; font-weight: bold " >Video</a>
+                <a href="./lyric" style="background-image: linear-gradient(to right,#FABDD4,#FFF5E8);  color: #A27F75; font-weight: bold" >Lyric</a>
+                <a href="./grammar" style="background-image: linear-gradient(to right,#FABDD4,#FFF5E8);  color: #A27F75; font-weight: bold" >Grammar</a>
+                
+            </div>
+        </div>
+        <div id="content" style="background-color: #FDFAF7;">
+            Content
+            <%- include(content) %>
+        </div>
+    </div>
+</body>
+</html>

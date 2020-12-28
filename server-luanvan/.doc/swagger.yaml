@@ -1,0 +1,317 @@
+openapi: "3.0.0"
+info:
+  title: KOREA LANGUAGE
+  version: "0.1"
+servers:
+  - url: "{baseHost}:3000"
+    variables:
+      baseHost:
+        enum:
+        - "http://127.0.0.1"
+        
+        default: "http://127.0.0.1"
+tags:
+    - name: Word
+    - name: Lyric 
+    - name: Lession
+    - name: Video
+   
+paths:
+    /lyricKorea:
+        get:
+            tags:
+             - Lyric
+            operationId: getlyric
+            responses:
+               '200':
+                   $ref: "#/components/responses/getlyric"
+    /wordKorea:
+        post:
+          tags:
+            - Word
+          operationId: getword
+          responses:
+               '200':
+                   $ref: "#/components/responses/getword"
+
+  
+    /lessionKorea:
+        post:
+          tags:
+            - Lession
+          operationId: getword
+          responses:
+               '200':
+                   $ref: "#/components/responses/getlession"
+    /videoKorea:
+        get:
+          tags:
+            - Video
+          operationId: getvideo
+          responses:
+               '200':
+                   $ref: "#/components/responses/getvideo" 
+
+    /videoKorean:
+        get:
+          tags:
+            - Video
+          operationId: getvideolyric
+          responses:
+               '200':
+                   $ref: "#/components/responses/getvideolyric"                    
+components:       
+    schemas:
+
+ 
+                                            
+#Reusable request bodies
+    request:
+      addword:
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  file:
+                    type: string
+                    format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Language: 
+                    type: string
+                    example: 안 녕 하 세 요!
+                  Spelling:
+                    type: string
+                    example: "An nyong ha sê yô."
+                  Meaning:
+                    type: string
+                    example: "Chào buổi sáng"
+                  Types:
+                    type: string
+                    example: "인 사"
+                
+                      
+#Reusable response bodies
+    responses:
+      getlyric:
+          description: |-
+
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - kq
+                properties:
+                  kq:
+                    type: integer
+                    example: 1
+                  arrLyric:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "5fa75aceb0173767bbfea78a"
+                        Korean:
+                          type: string
+                          example: "보란 듯이 무너졌어 바닥을 뚫고 저 지하까지"
+                        English:
+                          type: string
+                          example: "I crumbled before your eyes Hit rock bottom and sunk deeper"
+                        Time:
+                          type: string
+                          example: "0:09"
+                        __v:
+                          type: integer
+                          example: 0
+      getword:
+          description: |-
+
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - kq
+                properties:
+                  kq:
+                    type: integer
+                    example: 1
+                  arrWord:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "5fa75aceb0173767bbfea78a"
+                        Language:
+                          type: string
+                          example: "안 녕 하 세 요"
+                        Spelling:
+                          type: string
+                          example: "An nyong ha sê yô."
+                        Meaning:
+                          type: string
+                          example: "Chào buổi sáng"
+                        Media:
+                          type: string
+                          example: "1604808523856-1.mp3"
+                        Types:
+                          type: string
+                          example: "인 사"
+                        __v:
+                          type: integer
+                          example: 0
+      addword:
+          description: |-
+
+          content:
+            application/json:  
+              schema:
+                type: object
+                request:
+                  - kq
+                properties:
+                  kq:
+                    type: integer
+                    example: 1         
+
+#///////
+      getlession:
+          description: |-
+
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - kq
+                properties:
+                  kq:
+                    type: integer
+                    example: 1
+                  arrLession:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "5fa75aceb0173767bbfea78a"
+                        Title:
+                          type: string
+                          example: "Color Vocabulary"
+                        File:
+                          type: string
+                          example: "1604199123951-School.pdf"
+                        __v:
+                          type: integer
+                          example: 0
+      getvideo:
+          description: |-
+            
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - kq
+                properties:
+                  kq:
+                    type: integer
+                    example: 1
+                  arrVideo:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Lyric:
+                          type: array
+                          items:
+                            type: string
+                            example: "5fa75aceb0173767bbfea78a" 
+                        _id:
+                          type: string
+                          example: "5fa75aceb0173767bbfea78a"
+                        Title:
+                          type: string
+                          example: "Color Vocabulary"
+                        File:
+                          type: string
+                          example: "1604199123951-School.pdf"
+                        __v:
+                          type: integer
+                          example: 0  
+                
+      getvideolyric:
+          description: |-
+            
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - kq
+                properties:
+                  kq:
+                    type: integer
+                    example: 1
+                  DSVideo:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Lyric:
+                          type: array
+                          items:
+                            type: string
+                            example: "5fa75aceb0173767bbfea78a" 
+                        _id:
+                          type: string
+                          example: "5fa75aceb0173767bbfea78a"
+                        Title:
+                          type: string
+                          example: "Color Vocabulary"
+                        File:
+                          type: string
+                          example: "1604199123951-School.pdf"
+                        __v:
+                          type: integer
+                          example: 0  
+                        DSLyric:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              _id:
+                                type: string
+                                example: "5fa75aceb0173767bbfea78a"
+                              Korean:
+                                type: string
+                                example: "보란 듯이 무너졌어 바닥을 뚫고 저 지하까지"
+                              English:
+                                type: string
+                                example: "I crumbled before your eyes Hit rock bottom and sunk deeper"
+                              Time:
+                                type: string
+                                example: "0:09"
+                              __v:
+                                type: integer
+                                example: 0
+               
+
+
+
+
+                  
+
+      
+
+
+

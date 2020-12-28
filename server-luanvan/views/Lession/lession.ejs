@@ -1,0 +1,227 @@
+<script>
+    $(document).ready(function(){
+        var url = "http://localhost:3000";
+        $.get(url + "/lessionKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.arrLession.forEach(function(less){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="lession" lession="cate" srcFile="`+ less.File +`"  idcate="`+less._id+`"> `+ less.Title+`  </td>   
+                                    <td> `+ less.File+`  </td>                             
+                                </tr>
+                               
+                                   `);
+                                });
+                            }
+        });
+        $("#lessionsp").change(function(){
+            var data = new FormData();
+                jQuery.each(jQuery('#lessionsp')[0].files, function(i, file) {
+                    console.log('media');
+                    data.append('media', file);
+                });
+                jQuery.ajax({
+                    url: url + "/uploadFile",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST', // For jQuery < 1.9
+                    success: function(data){
+                        if(data.kq==1){
+                            console.log(data);
+                           $("#FileCateNew").attr("src", url+`/upload/`+ data.urlFile.filename );
+                         //   $('audio #AudioCateNew').attr("src", url+`/upload/`+ data.urlFile.filename );
+                        //     $('audio').get(0).load();
+                        //    $('audio').get(0).play();
+                           $("#file_MediaCate").val(data.urlFile.filename);
+                      
+                        }else{
+                            console.log("Upload fail!");
+                        }
+                    }
+                });
+        });  
+        $("#filesp_Detail").change(function(){
+        var data = new FormData();
+        jQuery.each(jQuery('#filesp_Detail')[0].files, function(i, file) {
+            console.log('media');
+            data.append('media', file);
+        });
+        jQuery.ajax({
+            url: url + "/uploadFile",
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST', // For jQuery < 1.9
+            success: function(data){
+                if(data.kq==1){
+                    console.log(data);
+                    
+                    $("#file_FileCate_Detail").val(data.urlFile.filename);
+                }else{
+                    console.log("Upload fail!");
+                }
+            }
+        });
+    });
+        $("#btn_Add_New_Cate").click(function(){
+            if($("#file_MediaCate").val().length==0 || $("#title").val().length==0){
+                alert("Vui chon file pdf");
+            }else{
+                $.post(url + "/lessionKorea/add", {
+                    Title:$("#title").val(),
+                    File:$("#file_MediaCate").val(),
+                     
+                }, function(data){
+                    if(data.kq==1){
+                        
+                        alert("Add Sucessfully");
+                        $.get(url + "/lessionKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.arrLession.forEach(function(less){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="cate" class="cate" srcFile="`+ less.File +`"  idcate="`+less._id+`"> `+ less.Title+`  </td>   
+                                    <td   class="cate"> `+ less.File+`  </td>                             
+                                </tr>
+                               
+                                   `);
+                                });
+                                console.log(data);
+                            }
+        });
+                        
+                        
+                    }else{
+                        console.log("bad");
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", ".lession", function(){
+            var FileSrc = $(this).attr("srcFile");
+            var titleCate = $(this).html();
+            var idCate = $(this).attr("idcate");
+         
+            $("#cateTitle_Detail").val(titleCate);
+            
+            $("#file_FileCate_Detail").val(FileSrc);
+            $("#idCate_Detail").val(idCate);
+
+            
+            
+        });
+
+        $("#btn_Update_Cate").click(function(){
+            $.post(url + "/lessionKorea/update", {
+                idCate:$("#idCate_Detail").val(),
+                CateTitle:$("#cateTitle_Detail").val(),
+                FileCate:$("#file_FileCate_Detail").val()
+            }, function(data){
+                if(data.kq==1){
+                    alert("Update Sucessfully");
+                  
+                        $.get(url + "/lessionKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.arrLession.forEach(function(less){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="cate" class="cate" srcFile="`+ less.File +`"  idcate="`+less._id+`"> `+ less.Title+`  </td>   
+                                    <td   class="cate"> `+ less.File+`  </td>                             
+                                </tr>
+                               
+                                   `);
+                                });
+                                console.log(data);
+                            }
+        });
+                }else{
+                    alert("Update cate failed: " + data.errMsg);
+                }
+            });
+        });
+
+        $("#btn_Delete_Cate").click(function(){
+            $.post(url + "/lessionKorea/delete", {idCate:$("#idCate_Detail").val()}, function(data){
+                if(data.kq==1){
+                    alert("Delete Sucessfully");
+                  
+                        $.get(url + "/lessionKorea", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.arrLession.forEach(function(less){
+                                    
+                                $("#list").append(`
+                                <tr>
+                                    <td  class="cate" class="cate" srcFile="`+ less.File +`"  idcate="`+less._id+`"> `+ less.Title+`  </td>   
+                                    <td   class="cate"> `+ less.File+`  </td>                             
+                                </tr>
+                               
+                                   `);
+                                });
+                                console.log(data);
+                            }
+        });
+                }else{
+                    alert("Delete cate failed: " + data.errMsg);
+                }
+            });
+        });
+  
+    });
+
+    
+    </script>
+    
+    <div id="form_AddNewCate">
+        <input type="file" id="lessionsp" /> <br/>
+        <input type="text" id="title" placeholder="Title" /> <br/>
+        <input type="button" id="btn_Add_New_Cate" value="Add new" />
+        <input type="hidden" id="file_MediaCate" />
+            <!-- <audio controls>
+                <source id="AudioCateNew" src="" type="audio/mpeg">
+               
+            </audio> -->
+    </div>
+    
+
+    <ul id="list_Cate"></ul>
+
+
+ 
+
+    <div id="form_UpdateCate">
+        <h2 id="detail">  </h2>        
+        <input type="file" id="filesp_Detail" /> <br/>
+        <input type="text" id="cateTitle_Detail"/> <br/>
+        <input type="button" id="btn_Update_Cate" value="Update" />
+        <input type="button" id="btn_Delete_Cate" value="Delete" />
+        <input type="text" id="file_FileCate_Detail" readonly />
+        <input type="hidden" id="idCate_Detail" />
+    </div>
+
+   
+      
+    <table width="auto"  border="1">
+
+        <tr>
+            <td> <h3>Title </h3> </td>
+            
+        </tr>
+        <tr id = "list"> </tr>
+
+
+       
+</table>
+

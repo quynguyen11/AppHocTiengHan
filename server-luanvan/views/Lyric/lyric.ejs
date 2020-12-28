@@ -1,0 +1,146 @@
+<script>
+    $(document).ready(function(){
+        var url = "http://localhost:3000";
+
+        $.get(url + "/videoKorean", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.DSVideo.forEach(function(video){
+                                    video.DSLyric.forEach(function(lyric) {
+                                $("#list").append(`
+                                <tr> 
+                                    <td  class= "lyric" idlyric="`+lyric._id+`" korea="`+lyric.Korean+`" english="`+lyric.English+`" time="`+lyric.Time+`"  idvideo="`+video._id+`" title="`+video.Title+`" srcFile="`+video.File+`" > `+ lyric.Korean+`</td> 
+                                    <td> `+ lyric.English+`</td> 
+                                    <td> `+ lyric.Time+`</td> 
+                                    <td  class="video" > `+ video.Title+`</td>  
+                                </tr>
+                               
+                                   `);
+                                    })
+                               
+                                   
+                                });
+                            
+                            }
+
+        });
+
+      
+        $(document).on("click", ".lyric", function(){
+            var VideoSrc = $(this).attr("srcFile")
+            var idVideo = $(this).attr("idvideo");
+            var idLyric = $(this).attr("idlyric");
+            var English = $(this).attr("english");
+            var Time = $(this).attr("time");
+            var Title = $(this).attr("title");
+            var Korean = $(this).html();
+
+            $("#korean_Detail").val(Korean);
+            $("#english_Detail").val(English);
+            $("#time_Detail").val(Time);
+            $("#titleVideo").val(Title);
+            $("#file_File_Detail").val(VideoSrc);
+            $("#idlyric_Detail").val(idLyric);
+            $("#idvideo_Detail").val(idVideo);   
+                   
+        });
+
+        $("#btn_Add_New_Cate").click(function(){
+            if($("#korean").val().length==0){
+                alert("Vui chon Lyric");
+            }else{
+                $.post(url + "/LyricKorea/add", {
+                    Korean:$("#korean").val(),
+                    English:$("#english").val(),
+                    Time:$("#time").val(),
+                    slVideo:$("#slVideo").val(),
+                     
+                }, function(data){
+                    if(data.kq==1){
+                        alert("Add Lyric Sucessfully");
+
+                         $.get(url + "/videoKorean", function(data){
+                            $("#list").html("");
+                            if(data.kq==1){
+                                data.DSVideo.forEach(function(video){
+                                    video.DSLyric.forEach(function(lyric) {
+                                $("#list").append(`
+                                <tr> 
+                                    <td  class= "lyric" idlyric="`+lyric._id+`" korea="`+lyric.Korean+`" english="`+lyric.English+`" time="`+lyric.Time+`"  idvideo="`+video._id+`" title="`+video.Title+`" srcFile="`+video.File+`" > `+ lyric.Korean+`</td> 
+                                    <td> `+ lyric.English+`</td> 
+                                    <td> `+ lyric.Time+`</td> 
+                                    <td  class="video" > `+ video.Title+`</td>  
+                                </tr>
+                               
+                                   `);
+                                    })
+                               
+                                   
+                                });
+                            
+                            }
+
+        });
+
+                        
+                        
+                        console.log("Okay");
+                    }else{
+                        console.log("bad");
+                    }
+                });
+            }
+        });
+    });
+
+    </script>
+    
+    <div id="form_AddNewCate">
+        
+        <select name ="slVideo" id="slVideo"> 
+            <% dsVideo.forEach(function(item){ %>
+                <option value="<%- item._id %>"> <%- item.Title %> </option>
+                
+           <%  }) ;%>
+        </select>
+
+        <input type="text" id="korean" placeholder="Korea" /> <br/>
+        <input type="text" id="english" placeholder="English" /> <br/>
+        <input type="text" id="time" placeholder="Time" /> <br/>
+        <input type="button" id="btn_Add_New_Cate" value="Add new" />
+       
+    </div>
+    
+    <div> 
+        <p> ------------------ </p>
+    </div>
+
+
+
+    <div id="form_UpdateDeleteVideo">
+       
+        <input type="text" id="titleVideo" readonly />
+        <input type="text" id="korean_Detail" placeholder="Korea" /> <br/>
+        <input type="text" id="english_Detail" placeholder="English" /> <br/>
+        <input type="text" id="time_Detail" placeholder="Time" /> <br/>
+        <input type="button" id="btn_Update" value="Update" />
+        <input type="button" id="btn_Delete" value="Delete" />
+        <input type="hidden" id="file_File_Detail" readonly />
+        <input type="hidden" id="idvideo_Detail" readonly />
+        <input type="hidden" id="idlyric_Detail" readonly />
+    </div>
+
+
+
+    <table width="auto"  border="1">
+
+        <tr>
+            <td> <h3>Lyric </h3> </td>
+            
+        </tr>
+        <tr >
+            <td id = "list" >
+
+            </td>
+         </tr>
+    
